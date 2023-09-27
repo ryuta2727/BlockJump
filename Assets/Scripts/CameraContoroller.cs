@@ -27,6 +27,7 @@ public class CameraContoroller : MonoBehaviour
 
     //
     private bool onceTime = true;
+    public bool onSwipe = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -45,13 +46,21 @@ public class CameraContoroller : MonoBehaviour
     }
     public void OnFire(InputAction.CallbackContext context)
     {
-        if(context.performed)
+        if(context.performed && !onSwipe)
         {
             ToZoomCamera();
         }
         else if(context.canceled)
         {
             ToMainCamera();
+            onSwipe = false;
+        }
+    }
+    public void OnLook(InputAction.CallbackContext context)
+    {
+        if (context.ReadValue<Vector2>().magnitude > 0.5f || context.ReadValue<Vector2>().magnitude < -0.5f)
+        {
+            onSwipe = true;
         }
     }
     public void OnRight(InputAction.CallbackContext context)

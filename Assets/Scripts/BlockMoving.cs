@@ -1,13 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using Cinemachine;
 public class BlockMoving : MonoBehaviour
 {
     [SerializeField]
     GameObject explosionPrefab;
-
+    [SerializeField]
+    Text text;
     private PlayerInput playerInput;
     private InputAction fire;
     private Rigidbody rbody;
@@ -16,6 +18,8 @@ public class BlockMoving : MonoBehaviour
     private float clickTimer = 0;
     private bool onClick = false;
     private bool onExplosion = false;
+    private bool onSwipe = false;
+    private bool onJump = false;
 
     private float m = 2;
     private float a = 8;
@@ -42,29 +46,50 @@ public class BlockMoving : MonoBehaviour
     {
         if(context.performed)
         {
+            onJump = true;
+            Debug.Log("aaa");
             onClick = true;
             NOS.StepsCount();
         }
         else if(context.canceled)
         {
-            Debug.Log(clickTimer);
-            var y = 0f;
-            if (clickTimer <= 2)
+            if (!onSwipe && onJump)
             {
-                y = clickTimer;
+                Debug.Log(clickTimer);
+                var y = 0f;
+                if (clickTimer <= 2)
+                {
+                    y = clickTimer;
+                }
+                else if (clickTimer > 2)
+                {
+                    y = Random.Range(3, 4);
+                }
+                //Debug.Log(clickTimer);
+                var force = m * a * VectorCalculation(y);
+                Debug.Log(force);
+                rbody.AddForce(force, ForceMode.Impulse);
             }
-            else if (clickTimer > 2)
-            {
-                y = Random.Range(3, 4);
-            }
+            onJump = false;
             onClick = false;
-            //Debug.Log(clickTimer);
-            var force = m * a * VectorCalculation(y);
-            Debug.Log(force);
-            rbody.AddForce(force, ForceMode.Impulse);
             clickTimer = 0;
-
+            onSwipe = false;
+            Debug.Log("ƒLƒƒƒ“ƒZƒ‹");
         }
+    }
+    public void OnLook(InputAction.CallbackContext context)
+    {
+            text.text = context.ReadValue<Vector2>().magnitude.ToString();
+            if (context.ReadValue<Vector2>().magnitude > 0.5f || context.ReadValue<Vector2>().magnitude < -0.5f)
+            {
+                if (!onJump)
+                {
+                    //Debug.Log("‚·‚í‚¢‚Õ[");
+                    clickTimer = 0;
+                    onClick = false;
+                    onSwipe = true;
+                }
+            }
     }
     public Vector3 VectorCalculation(float y)
     {
