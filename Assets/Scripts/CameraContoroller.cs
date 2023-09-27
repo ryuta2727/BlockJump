@@ -9,9 +9,13 @@ public class CameraContoroller : MonoBehaviour
     [SerializeField]
     CinemachineVirtualCamera titleCamera;
     [SerializeField]
+    CinemachineVirtualCamera whileCamera;
+    [SerializeField]
     CinemachineVirtualCamera gameMainCamera;
     [SerializeField]
-    GameObject titleCanvas;
+    GameObject title;
+    [SerializeField]
+    GameObject uiGetStar;
     [SerializeField]
     PlayerInput playerInput;
 
@@ -34,7 +38,6 @@ public class CameraContoroller : MonoBehaviour
     {
         if(onfire)
         {
-            Debug.Log("aaa");
             time += Time.deltaTime;
             gameMainCameraFT.m_CameraDistance = Mathf.Lerp(8, 2, time / maxTime);
         }
@@ -56,15 +59,17 @@ public class CameraContoroller : MonoBehaviour
         if(onceTime && context.performed)
         {
             onceTime = false;
-            titleCanvas.SetActive(false);
+            title.SetActive(false);
+            uiGetStar.SetActive(true);
             titleCamera.Priority = 0;
-            gameMainCamera.Priority = 10;
+            whileCamera.Priority = 10;
             StartCoroutine(CameraChangeTime());
         }
     }
     IEnumerator CameraChangeTime()
     {
         yield return new WaitForSeconds(2f);
+        gameMainCamera.Priority = 15;
         playerInput.currentActionMap = playerInput.actions.actionMaps[0];
     }
     public void ToMainCamera()

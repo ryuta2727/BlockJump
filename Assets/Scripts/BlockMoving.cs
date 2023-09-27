@@ -11,6 +11,7 @@ public class BlockMoving : MonoBehaviour
     private PlayerInput playerInput;
     private InputAction fire;
     private Rigidbody rbody;
+    private BoxCollider boxCollider;
 
     private float clickTimer = 0;
     private bool onClick = false;
@@ -26,6 +27,7 @@ public class BlockMoving : MonoBehaviour
         playerInput = GetComponent<PlayerInput>();
         fire = playerInput.actions["Fire"];
         rbody = GetComponent<Rigidbody>();
+        boxCollider = GetComponent<BoxCollider>();
     }
 
     // Update is called once per frame
@@ -45,6 +47,7 @@ public class BlockMoving : MonoBehaviour
         }
         else if(context.canceled)
         {
+            Debug.Log(clickTimer);
             var y = 0f;
             if (clickTimer <= 2)
             {
@@ -57,6 +60,7 @@ public class BlockMoving : MonoBehaviour
             onClick = false;
             //Debug.Log(clickTimer);
             var force = m * a * VectorCalculation(y);
+            Debug.Log(force);
             rbody.AddForce(force, ForceMode.Impulse);
             clickTimer = 0;
 

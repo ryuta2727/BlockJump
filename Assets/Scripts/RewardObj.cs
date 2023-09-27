@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class RewardObj : MonoBehaviour
 {
+    [SerializeField]
+    GetStarText getStarText;
     Clear clear;
     private void Start()
     {
@@ -12,6 +14,7 @@ public class RewardObj : MonoBehaviour
     public void OnTriggerEnter(Collider other)
     {
         clear.ClearCount();
+        getStarText.UpdateText();
         this.gameObject.SetActive(false);
     }
 }

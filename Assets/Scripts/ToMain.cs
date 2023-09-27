@@ -18,4 +18,8 @@ public class ToMain : MonoBehaviour
             SceneManager.LoadScene("GameScene");
         }
     }
+    public void OnClick()
+    {
+        SceneManager.LoadScene("GameScene");
+    }
 }
