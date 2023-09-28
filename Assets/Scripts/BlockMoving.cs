@@ -63,9 +63,9 @@ public class BlockMoving : MonoBehaviour
                 }
                 else if (clickTimer > 2)
                 {
-                    y = Random.Range(3, 4);
+                    y = Random.Range(2.5f, 3);
                 }
-                //Debug.Log(clickTimer);
+                Debug.Log(y);
                 var force = m * a * VectorCalculation(y);
                 Debug.Log(force);
                 rbody.AddForce(force, ForceMode.Impulse);
@@ -74,9 +74,9 @@ public class BlockMoving : MonoBehaviour
             onClick = false;
             clickTimer = 0;
             onSwipe = false;
-            Debug.Log("キャンセル");
         }
     }
+    //スワイプ処理
     public void OnLook(InputAction.CallbackContext context)
     {
             text.text = context.ReadValue<Vector2>().magnitude.ToString();
@@ -84,15 +84,23 @@ public class BlockMoving : MonoBehaviour
             {
                 if (!onJump)
                 {
-                    //Debug.Log("すわいぷー");
                     clickTimer = 0;
                     onClick = false;
                     onSwipe = true;
                 }
             }
     }
+    //移動ベクトルを求める
     public Vector3 VectorCalculation(float y)
     {
+        //y>2の時は暴発
+        if (y > 2)
+        {
+            //チャージしすぎの場合
+            Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+            return new Vector3(0, y, 0);
+        }
+        //カメラ方向を求める
         Vector3 cameraForward = Vector3.Scale(Camera.main.transform.forward, new Vector3(1, 0, 1)).normalized;
         if(cameraForward.x == 0)
         {
@@ -102,22 +110,18 @@ public class BlockMoving : MonoBehaviour
         {
             return Vector3.forward;
         }
-        //Debug.Log(cameraForward);
+        //---垂直ベクトルを求める----
         var z = Mathf.Sqrt(1f / (Mathf.Pow((cameraForward.z /cameraForward.x),2) + 1f));
         if(cameraForward.x > 0)
         {
             z = -z;
         }
-        //Debug.Log(z);
         var x = -((cameraForward.z * z) / cameraForward.x);
-        //yの値可変式する予定
         Vector3 verticalVector = new Vector3(x, y, z);
-        if(y > 2)
-        {
-            verticalVector = new Vector3(0, y, 0);
-        }
+        
         return verticalVector;
     }
+    //ゲームオーバー(落下)時のエフェクト
     public void Explosion()
     {
         if (!onExplosion)

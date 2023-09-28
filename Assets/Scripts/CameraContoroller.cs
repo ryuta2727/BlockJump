@@ -37,6 +37,7 @@ public class CameraContoroller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //カメラのズーム
         if(onfire)
         {
             time += Time.deltaTime;
@@ -44,6 +45,7 @@ public class CameraContoroller : MonoBehaviour
         }
         
     }
+    //左クリック
     public void OnFire(InputAction.CallbackContext context)
     {
         if(context.performed && !onSwipe)
@@ -56,6 +58,7 @@ public class CameraContoroller : MonoBehaviour
             onSwipe = false;
         }
     }
+    //スワイプ
     public void OnLook(InputAction.CallbackContext context)
     {
         if (context.ReadValue<Vector2>().magnitude > 0.5f || context.ReadValue<Vector2>().magnitude < -0.5f)
@@ -63,6 +66,7 @@ public class CameraContoroller : MonoBehaviour
             onSwipe = true;
         }
     }
+    //タイトルカメラ→メインカメラへ
     public void OnRight(InputAction.CallbackContext context)
     {
         if(onceTime && context.performed)
